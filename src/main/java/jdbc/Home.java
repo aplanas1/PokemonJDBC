@@ -6,9 +6,15 @@ public class Home {
 
     private Order order = new Order();
 
+    /**
+     * Constructor
+     */
     public Home() {
     }
 
+    /**
+     * Metodo principal donde se ejecutan los menus y las "ordenes"
+     */
     public void show(){
         if (conn != null) {
             System.out.println("Sucesfull connection");

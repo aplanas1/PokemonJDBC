@@ -26,6 +26,9 @@ public class Order {
     public Order() {
     }
 
+    /**
+     * Lee y añade los datos del .xml a la base de datos
+     */
     public void addData() {
         String FILENAME = "src/main/resources/pokemons.xml";
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -98,6 +101,9 @@ public class Order {
         }
     }
 
+    /**
+     * Te muestra todos los pokemons de la base de datos
+     */
     public void showAllPokemons() {
 
         try {
@@ -115,6 +121,9 @@ public class Order {
         }
     }
 
+    /**
+     * Te permite buscar un pokemon por su nombre
+     */
     public void searchPokemon() {
 
         try {
@@ -133,6 +142,11 @@ public class Order {
             e.printStackTrace();
         }
     }
+
+    /**
+     * Te permite filtrar por su tipo a los pokemons
+     * @param tipo el tipo a filtrar
+     */
     public void searchPokemonsByType(String tipo) {
         try {
             String sql = "SELECT * FROM pokemons WHERE tipo1= \'" + tipo + "\' OR tipo2=\'" + tipo + "\'";
@@ -146,6 +160,29 @@ public class Order {
         }
     }
 
+    /**
+     * Te permite filtrar a los pokemons por su habilidad
+     * @param habilidad la habilidad a filtrar
+     */
+    public static void searchPokemonsByHabilidad(String habilidad) {
+
+        try {
+
+            String sql = "SELECT * FROM pokemons WHERE habilidad1= \'" + habilidad + "\' OR habilidad2=\'" + habilidad + "\'";
+            PreparedStatement pst = conn.prepareStatement(sql);
+            ResultSet rs = pst.executeQuery();
+
+            while(rs.next()){
+                System.out.println("Nombre: " + rs.getString("nombre")+" | "+ rs.getString("habilidad1")+" | "+ rs.getString("habilidad2"));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Te permite editar un pokemon a tu eleccion
+     */
     public void editPokemonName() {
         try {
             System.out.println("Introduce el nombre del pokemon a editar: ");
@@ -162,6 +199,9 @@ public class Order {
         }
     }
 
+    /**
+     * Te permite eliminar un pokemon a tu eleccion
+     */
     public void deletePokemon() {
 
         try {
@@ -171,13 +211,17 @@ public class Order {
             PreparedStatement pst = conn.prepareStatement(sql);
             pst.executeUpdate();
 
-            System.out.println("Pokemon "+ nomb +" eliminado");
+            System.out.println(nomb + " eliminado por la ordern 66");
 
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
+    /**
+     * Te permite eliminar pokemons por su tipo
+     * @param tipo el tipo a purgar
+     */
     public void deletePokemonByType(String tipo) {
 
         try {
@@ -185,24 +229,8 @@ public class Order {
             PreparedStatement pst = conn.prepareStatement(sql);
             pst.executeUpdate();
 
-            System.out.println("Pokemons del "+ tipo +" eliminados");
+            System.out.println("Pokemons del "+ tipo +" eliminados por la orden 66");
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static void searchPokemonsByHabilidad(String habilidad) {
-
-        try {
-
-            String sql = "SELECT * FROM pokemons WHERE habilidad1= \'" + habilidad + "\' OR habilidad2=\'" + habilidad + "\'";
-            PreparedStatement pst = conn.prepareStatement(sql);
-            ResultSet rs = pst.executeQuery();
-
-            while(rs.next()){
-                System.out.println("Nombre: " + rs.getString("nombre")+" | "+ rs.getString("habilidad1")+" | "+ rs.getString("habilidad2"));
-            }
         } catch (Exception e) {
             e.printStackTrace();
         }

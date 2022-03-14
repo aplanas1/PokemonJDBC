@@ -17,12 +17,22 @@ import java.sql.*;
 public class Main {
 
     public static Connection conn;
+
+    /**
+     * Metodo main que ejecuta el show del Home
+     * @param args
+     * @throws Exception
+     */
     public static void main( String[] args ) throws Exception {
         conn = connect();
         Home home = new Home();
         home.show();
     }
 
+    /**
+     * Metdo para conectarse a la base de datos
+     * @return
+     */
     public static Connection connect() {
         try {
             //Carreguem el driver de postgreSQL

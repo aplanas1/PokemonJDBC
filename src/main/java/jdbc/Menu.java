@@ -11,6 +11,10 @@ public class Menu {
         super();
     }
 
+    /**
+     * Menu principal
+     * @return
+     */
     public int mainMenu() {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         do {
@@ -35,6 +39,10 @@ public class Menu {
         return option;
     }
 
+    /**
+     * Menu para visualizar los tipos
+     * @return
+     */
     public int typeMenu() {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         do {
@@ -54,6 +62,10 @@ public class Menu {
         return option;
     }
 
+    /**
+     * Menu para visulaizar las habilidades
+     * @return
+     */
     public int habMenu() {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         do {
