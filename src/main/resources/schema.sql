@@ -13,7 +13,7 @@ CREATE TABLE habilidades
 CREATE TABLE pokemons
 (
     id_pokemon SERIAL NOT NULL,
-    nombre character varying(30) NOT NULL,
+    nombre character varying(30) NOT NULL UNIQUE ,
     tipo1 character varying(30),
     tipo2 character varying(30),
     habilidad1 character varying(30),

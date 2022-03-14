@@ -1,4 +1,4 @@
-package main.java.jdbc;
+package jdbc;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -12,19 +12,21 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Scanner;
 
-import static main.java.jdbc.Main.conn;
+import static jdbc.Main.conn;
 
 public class Order {
+
+    Scanner scanner = new Scanner(System.in);
 
     public Order() {
     }
 
-    public static void addData() {
+    public void addData() {
         String FILENAME = "src/main/resources/pokemons.xml";
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         String sqlTipo = "INSERT INTO tipos(tipo) VALUES(?)";
@@ -50,65 +52,54 @@ public class Order {
                 Node node = list.item(temp);
 
                 if (node.getNodeType() == Node.ELEMENT_NODE) {
-
-                    Element element = (Element) node;
-
-                    // get text
-                    String nombre = element.getElementsByTagName("nombre").item(0).getTextContent();
-                    String tipo1 = element.getElementsByTagName("tipo1").item(0).getTextContent();
-                    String tipo2 = element.getElementsByTagName("tipo2").item(0).getTextContent();
-                    String habilidad1 = element.getElementsByTagName("habilidad1").item(0).getTextContent();
-                    String habilidad2 = element.getElementsByTagName("habilidad2").item(0).getTextContent();
-                    String descripcion = element.getElementsByTagName("descripcion").item(0).getTextContent();
-
-                    PreparedStatement pstTipo = conn.prepareStatement(sqlTipo);
                     try {
-                        pstTipo.setString(1, tipo1);
-                        pstTipo.executeUpdate();
+                        Element element = (Element) node;
+
+                        // get text
+                        String nombre = element.getElementsByTagName("nombre").item(0).getTextContent();
+                        String tipo1 = element.getElementsByTagName("tipo1").item(0).getTextContent();
+                        String tipo2 = element.getElementsByTagName("tipo2").item(0).getTextContent();
+                        String habilidad1 = element.getElementsByTagName("habilidad1").item(0).getTextContent();
+                        String habilidad2 = element.getElementsByTagName("habilidad2").item(0).getTextContent();
+                        String descripcion = element.getElementsByTagName("descripcion").item(0).getTextContent();
+
+                        PreparedStatement pstTipo = conn.prepareStatement(sqlTipo);
+                            pstTipo.setString(1, tipo1);
+                            pstTipo.executeUpdate();
+                            pstTipo.setString(1, tipo2);
+                            pstTipo.executeUpdate();
+
+                        PreparedStatement pstHab = conn.prepareStatement(sqlHab);
+                            pstHab.setString(1, habilidad1);
+                            pstHab.executeUpdate();
+                            pstHab.setString(1, habilidad2);
+                            pstHab.executeUpdate();
+
+                        PreparedStatement pstPok = conn.prepareStatement(sqlPok);
+
+                        pstPok.setString(1, nombre);
+                        pstPok.setString(2, tipo1);
+                        pstPok.setString(3, tipo2);
+                        pstPok.setString(4, habilidad1);
+                        pstPok.setString(5, habilidad2);
+                        pstPok.setString(6, descripcion);
+
+                        pstPok.executeUpdate();
+
+                        System.out.println(nombre + " insertado");
                     } catch (SQLException e) {
-                        e.printStackTrace();
+
                     }
-                    try {
-                        pstTipo.setString(1, tipo2);
-                        pstTipo.executeUpdate();
-                    } catch (SQLException e) {
-                        e.printStackTrace();
-                    }
-
-                    PreparedStatement pstHab = conn.prepareStatement(sqlHab);
-                    try {
-                        pstHab.setString(1, habilidad1);
-                        pstHab.executeUpdate();
-                    } catch (SQLException e) {
-                        e.printStackTrace();
-                    }
-                    try {
-                        pstHab.setString(1, habilidad2);
-                        pstHab.executeUpdate();
-                    } catch (SQLException e) {
-                        e.printStackTrace();
-                    }
-
-                    PreparedStatement pstPok = conn.prepareStatement(sqlPok);
-
-                    pstPok.setString(1, nombre);
-                    pstPok.setString(2, tipo1);
-                    pstPok.setString(3, tipo2);
-                    pstPok.setString(4, habilidad1);
-                    pstPok.setString(5, habilidad2);
-                    pstPok.setString(6, descripcion);
-
-                    pstPok.executeUpdate();
-
                 }
             }
 
-        } catch (ParserConfigurationException | SAXException | SQLException | IOException e) {
+        } catch (ParserConfigurationException | SAXException | IOException e) {
             e.printStackTrace();
         }
     }
 
-    public static void showPokemons() {
+    public void showAllPokemons() {
+
         try {
             String sql = "SELECT * FROM pokemons";
             PreparedStatement pst = conn.prepareStatement(sql);
@@ -118,6 +109,99 @@ public class Order {
                 System.out.println("Nombre: " + rs.getString("nombre")+" | "+ rs.getString("tipo1")+" | "+ rs.getString("tipo2")
                         +" | Habilidad1: "+ rs.getString("habilidad1")+" | Habilidad2: "+ rs.getString("habilidad2")
                         +" | Descripcion: "+ rs.getString("descripcion"));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void searchPokemon() {
+
+        try {
+            System.out.println("Introduce el nombre del pokemon: ");
+            String nomb = scanner.nextLine();
+            String sql = "SELECT * FROM pokemons WHERE nombre=\'" + nomb + "\'";
+            PreparedStatement pst = conn.prepareStatement(sql);
+            ResultSet rs = pst.executeQuery();
+            while(rs.next()) {
+                System.out.println("Nombre: " + rs.getString("nombre") + " | " + rs.getString("tipo1") + " | " + rs.getString("tipo2")
+                        + " | Habilidad1: " + rs.getString("habilidad1") + " | Habilidad2: " + rs.getString("habilidad2")
+                        + " | Descripcion: " + rs.getString("descripcion"));
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    public void searchPokemonsByType(String tipo) {
+        try {
+            String sql = "SELECT * FROM pokemons WHERE tipo1= \'" + tipo + "\' OR tipo2=\'" + tipo + "\'";
+            PreparedStatement pst = conn.prepareStatement(sql);
+            ResultSet rs = pst.executeQuery();
+            while(rs.next()) {
+                System.out.println("Nombre: " + rs.getString("nombre") + " | " + rs.getString("tipo1") + " | " + rs.getString("tipo2"));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void editPokemonName() {
+        try {
+            System.out.println("Introduce el nombre del pokemon a editar: ");
+            String nomb1 = scanner.nextLine();
+            System.out.println("Introduce el nuevo nombre del pokemon: ");
+            String nomb2 = scanner.nextLine();
+            String sql = "UPDATE pokemons SET nombre= \'" + nomb2 + "\' WHERE nombre= \'" + nomb1 + "\'";
+            PreparedStatement pst = conn.prepareStatement(sql);
+            pst.executeUpdate();
+            System.out.println(nomb1 + " a cambiado a " + nomb2);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void deletePokemon() {
+
+        try {
+            System.out.println("Introduce el nombre del pokemon: ");
+            String nomb = scanner.nextLine();
+            String sql = "DELETE FROM pokemons WHERE nombre=\'" + nomb + "\'";
+            PreparedStatement pst = conn.prepareStatement(sql);
+            pst.executeUpdate();
+
+            System.out.println("Pokemon "+ nomb +" eliminado");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void deletePokemonByType(String tipo) {
+
+        try {
+            String sql = "DELETE FROM pokemons WHERE tipo1= \'" + tipo + "\' OR tipo2=\'" + tipo + "\'";
+            PreparedStatement pst = conn.prepareStatement(sql);
+            pst.executeUpdate();
+
+            System.out.println("Pokemons del "+ tipo +" eliminados");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void searchPokemonsByHabilidad(String habilidad) {
+
+        try {
+
+            String sql = "SELECT * FROM pokemons WHERE habilidad1= \'" + habilidad + "\' OR habilidad2=\'" + habilidad + "\'";
+            PreparedStatement pst = conn.prepareStatement(sql);
+            ResultSet rs = pst.executeQuery();
+
+            while(rs.next()){
+                System.out.println("Nombre: " + rs.getString("nombre")+" | "+ rs.getString("habilidad1")+" | "+ rs.getString("habilidad2"));
             }
         } catch (Exception e) {
             e.printStackTrace();

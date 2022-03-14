@@ -1,4 +1,4 @@
-package main.java.jdbc;
+package jdbc;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -20,6 +20,7 @@ public class Main {
     public static void main( String[] args ) throws Exception {
         conn = connect();
         Home home = new Home();
+        home.show();
     }
 
     public static Connection connect() {
